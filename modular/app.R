@@ -22,23 +22,38 @@ ui <- list(input = list(render = renderlist, react= reactlist, output = outputli
            output = list(page = pagelist,widget = widgetlist,button = buttonlist))
 bui = fluidPage(
   title = "page",
+
+  absolutePanel(draggable = T, bottom = 180, right = 20, width = 200,
+        div(
+    style="padding: 8px; background: #bce3c8;",
+                
+  selectInput("select_value1", label = "Type of Widget", choices = names(ui[[2]]))),
+  uiOutput('select_value2')),
+  absolutePanel(draggable = T, bottom = 3000, right = 20, width = 200,
+                div(
+                  style="padding: 8px; background: #bce3c8;",
+                  selectInput("select_y", label = "Widget Location (y axis)", choices = c("top", "middle", "bottom")),
+                selectInput('select_x', label = "Widget Location (x axis)", choices = c("left", "middle", "right"))),
+                textInput("column_width", label = "Width of Object")
+                ),
+  column(3,
   wellPanel(
-  selectInput("select_value1", label = "Type of Widget", choices = names(ui[[2]])),
-  uiOutput('select_value2'),
-  uiOutput('ui_object')
-)
+  uiOutput('ui_object')))
+
 )
 server = function(input, output) {
     select_value1 <- reactive({ ui[["output"]][[input$select_value1]]})
     output$select_value2 <- renderUI({
-      wellPanel(
+    absolutePanel(draggable = F, width = 200,
+                  div(
+      style="padding: 8px; border-bottom: 3px solid #CCC; background: #bce3c8;",
     selectInput("select_value2", choices = select_value1(),
                 label = ""),
-    actionButton("create", "Submit"))
+    actionButton("create", "Submit")))
     })
     observeEvent(input$create, {
     output$ui_object <- renderUI({ eval(parse(text=paste0(input$select_value2, "(", 
-                                                          "'object", input$create, "', label='object", input$create,"')")))}) })
+                                                          "'object", input$create, "', label='object", input$create,"')")))})})
   
 }
 shinyApp(bui, server)
