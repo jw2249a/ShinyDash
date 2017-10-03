@@ -29,13 +29,6 @@ ui = fluidPage(
                 
   selectInput("select_value1", label = "Type of Widget", choices = names(editor_list[[2]]))),
   uiOutput('select_value2')),
-  absolutePanel(draggable = T, bottom = 3000, right = 20, width = 200, height = 50,
-                div(
-                  style="padding: 4px; background: #bce3c8;",
-                  selectInput("select_y", label = "Widget Location (y axis)", choices = c("top", "middle", "bottom")),
-                selectInput('select_x', label = "Widget Location (x axis)", choices = c("left", "middle", "right"))),
-                textInput("column_width", label = "Width of Object")
-                ),
   column(3,
   wellPanel(
   uiOutput('ui_object')))
