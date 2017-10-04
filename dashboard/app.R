@@ -8,8 +8,9 @@ ui <- sidebarLayout(
                                         uiOutput("pages"))),
             
             mainPanel(width = 9,
-                column(4, "editor", fluidPage(uiOutput("editor"))), 
-                
+                column(4, fluidPage(uiOutput("editor"), 
+                                    actionButton(inputId = "save_output",
+                                                                     label = "Save"))), 
                 
                 column(5, "preview", fluidPage(uiOutput("preview")))))
 
@@ -21,7 +22,11 @@ server <- function(input, output) {
   output$pages <- renderUI({
     selectInput("listpages", "Select a Page to Edit", choices = data()$pages)
   })
-  output$editor <- renderText({data()$code[data()$pages == input$listpages]})
-
+  
+  output$editor <- renderUI({ fluidPage(
+    flowLayout(textAreaInput(inputId = "code_editor", label = "Editor", 
+                                            value = data()$code[data()$pages == input$listpages])
+                ))})
+  observeEvent(input$save_output, { write})
 }
 shinyApp(ui, server)
